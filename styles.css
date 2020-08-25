@@ -1,0 +1,71 @@
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+.gameboard {
+    width: 400px;
+    height: 400px;
+    margin: 0 auto;
+    margin-top: 40px;
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.field {
+    border: 2px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.field>p {
+    font-size: 100px;
+    z-index: -1;
+    font-family: 'Sedgwick Ave Display', cursive;
+}
+
+.field0, .field1, .field2 {
+    border-top-width: 0px;
+}
+
+.field0, .field3, .field6 {
+    border-left-width: 0px;
+}
+
+.field6, .field7, .field8 {
+    border-bottom-width: 0px;
+}
+
+.field2, .field5, .field8 {
+    border-right-width: 0px;
+}
+
+.green {
+    color: rgb(60, 122, 60);
+}
+
+.blue {
+    color: rgb(42, 42, 107);
+}
+
+@media screen and (min-width: 645px) {
+    .gameboard {
+        width: 600px;
+        height: 600px;
+    }
+    .field>p {
+        font-size: 130px;
+    }
+}
+
+@media screen and (min-width: 848px) {
+    .gameboard {
+        width: 800px;
+        height: 800px;
+    }
+    .field>p {
+        font-size: 160px;
+    }
+}
