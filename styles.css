@@ -1,16 +1,27 @@
 html, body {
     height: 100%;
     width: 100%;
+    font-size: 16px;
+}
+
+h1 {
+    font-family: 'Sedgwick Ave Display', cursive;
+    letter-spacing: 1.2rem;
+    font-size: 2rem;
+    padding-top: 15px;
+    padding-bottom: 10px;
+    text-align: center;
+    background: rgb(226, 161, 197);
 }
 
 .gameboard {
     width: 400px;
     height: 400px;
     margin: 0 auto;
-    margin-top: 40px;
+    margin-top: 35px;
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: repeat(3, 133px);
+    grid-template-columns: repeat(3, 133px);
 }
 
 .field {
@@ -21,7 +32,7 @@ html, body {
 }
 
 .field>p {
-    font-size: 100px;
+    font-size: 5rem;
     z-index: -1;
     font-family: 'Sedgwick Ave Display', cursive;
 }
@@ -43,29 +54,196 @@ html, body {
 }
 
 .green {
-    color: rgb(60, 122, 60);
+    color: rgb(226, 161, 197);
 }
 
 .blue {
-    color: rgb(42, 42, 107);
+    color: black;
+}
+
+.float-message {
+    transition: all 0.3s;
+    transition: top 0s, left 0s, right 0s, bottom 0s, height 0s, width 0s;
+    border: 1px solid rgba(78, 20, 20, 0.192);
+    position: relative;
+    width: 130px;
+    height: 20px;
+    bottom: 277px;
+    left: 133.5px;
+    border-radius: 40px;
+    background: rgb(187, 56, 137);
+    text-align: center;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    opacity: 0;
+}
+
+.float-message>button {
+    color: white;
+    font-size: 0.7rem;
+    background: none;
+    border: none;
+    transition: font-size 0.02s;
+}
+
+.float-message>button:focus {
+    outline: none;
+}
+.hover>button:hover {
+    font-size: 0.72rem;
+}
+
+.float-visible {
+    opacity: 1;
+}
+
+.human {
+    background: rgb(226, 161, 197);
+}
+
+.nobody {
+    background: rgb(151, 22, 33);
+}
+
+.computer {
+    background: black;
+}
+
+.score {
+    position: relative;
+    bottom: 145px;
+    right: 12px;
+    background: red;
+    border-radius: 30px;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.score>p {
+    transition: all 1s;
+    border: 0px;
+    text-align: center;
+    font-size: 1.1rem;
+    color: white;
+    font-weight: 600;
+}
+
+.human-score {
+    background: rgb(226, 161, 197);
+}
+
+.human-score>p {
+    color: black;
+}
+
+.computer-score {
+    background: black
+}
+
+.score>.update-score {
+    transition: all 1s;
+    color: rgb(255, 68, 68);
+    font-size: 1.5rem;
+}
+
+div.update-score {
+    background: white;
+}
+
+.active {
+    border: 2px solid rgb(27, 128, 14);
 }
 
 @media screen and (min-width: 645px) {
+    h1 {
+        letter-spacing: 1.1rem;
+        font-size: 3rem;
+        padding-top: 15px;
+        padding-bottom: 10px;
+    }
     .gameboard {
-        width: 600px;
-        height: 600px;
+        width: 550px;
+        height: 550px;
+        grid-template-rows: repeat(3, 170px);
+        grid-template-columns: repeat(3, 170px);
     }
     .field>p {
-        font-size: 130px;
+        font-size: 7.5rem;
+    }
+    .float-message {
+        width: 190px;
+        height: 30px;
+        bottom: 357px;
+        left: 159px;
+    }
+    .float-message>button {
+        font-size: 1rem;
+    }
+    .hover>button:hover {
+        font-size: 1.05rem;
+    }
+    .score {
+        bottom: 188px;
+        right: 17px;
+        width: 35px;
+        height: 35px;
+    }
+    .score>p {
+        font-size: 1.2rem;
+    }
+    .score>.update-score {
+        transition: all 1s;
+        color: rgb(255, 68, 68);
+        font-size: 1.8rem;
     }
 }
 
 @media screen and (min-width: 848px) {
+    h1 {
+        letter-spacing: 1rem;
+        font-size: 4rem;
+        padding-top: 30px;
+        padding-bottom: 15px;
+    }
     .gameboard {
-        width: 800px;
-        height: 800px;
+        width: 650px;
+        height: 650px;
+        grid-template-rows: repeat(3, 216px);
+        grid-template-columns: repeat(3, 216px);
     }
     .field>p {
-        font-size: 160px;
+        font-size: 9rem;
+    }
+    .float-message {
+        width: 250px;
+        height: 37px;
+        bottom: 453px;
+        left: 200px;
+    }
+    .float-message>button {
+        font-size: 1.3rem;
+    }
+    .hover>button:hover {
+        font-size: 1.31rem;
+        font-weight: 600;
+    }
+    .score {
+        bottom: 232px;
+        right: 17px;
+        width: 35px;
+        height: 35px;
+    }
+    
+    .score>p {
+        font-size: 1.3rem;
+    }
+    .score>.update-score {
+        font-size: 2rem;
     }
 }
