@@ -1,19 +1,24 @@
 // Tasks: 
 // Build AI
 // Make reset button
-// Allow choice between 2player game and game against AI
 
 const gameboard = (function() {
     let _gameboard = [[], [], [], 
                       [], [], [], 
                       [], [], []];
-
+    const infoField = document.querySelector('button');
+    const fields = document.querySelectorAll('.field');
+    const _humanScore = document.querySelector('.human-score');
+    const _computerScore = document.querySelector('.computer-score');
+    let status = "pause";
+    
     const _render = () => {
         fields.forEach((field, index) => {
             field.firstChild.innerText = _gameboard[index][0];
             field.firstChild.classList = `${_gameboard[index][1]}`;
         });
     };
+
     const updateScore = (winner) => {
         _humanScore.firstChild.innerText = human.score;
         _computerScore.firstChild.innerText = computer.score;
@@ -25,47 +30,54 @@ const gameboard = (function() {
             _computerScore.classList.toggle('update-score');
         }
     }
+
     const applyMove = (symbol, location, color) => {
         _gameboard[location] = [symbol, color];
         toggleActive();
         _render();
     };
+
     const resetGameboard = () => {
         _gameboard.forEach((field, index) => {
             _gameboard[index] = ["", "blank"];
         });
         _render();
     }
+
     const toggleActive = () => {
         _humanScore.classList.toggle('active');
         _computerScore.classList.toggle('active');
     }
 
-    const infoField = document.querySelector('button');
-    const fields = document.querySelectorAll('.field');
-    const _humanScore = document.querySelector('.human-score');
-    const _computerScore = document.querySelector('.computer-score');
-    let status = "pause";
     return {applyMove, fields, infoField, status, resetGameboard, updateScore, toggleActive};
 })();
 
+
+
+
 const Player = (name, moveStatus) => {
-    const _name = name;
+    let _name = name;
     let _moveStatus = moveStatus;
+    
+    const getName = _name;
+    const setName = (newName) => {_name = newName};
     const toggleMoveStatus = () => {_moveStatus = !_moveStatus;};
     const checkMoveStatus = () => _moveStatus;
     const score = 0;
 
-    return {checkMoveStatus, toggleMoveStatus, moveStatus, score};
+    return {checkMoveStatus, toggleMoveStatus, score, getName, setName};
 }
+
+
+
 
 const gameLogic = (function() {
     const _winningPatterns = [[0, 1, 2], [0, 3, 6], [0, 4, 8], [1, 4, 7], [2, 4, 6], [2, 5, 8], [3, 4, 5]];
     let _humanStatus = [];
     let _computerStatus = [];
+
     const applyMove = (name, location) => {
         if(name === "human") {
-            console.log(name + location);
             _humanStatus.push(+location);
             _humanStatus.sort();
             human.toggleMoveStatus();
@@ -83,15 +95,18 @@ const gameLogic = (function() {
             _checkDraw();
         }
 
+        if(AI.status && computer.checkMoveStatus() && gameboard.status === "running") {
+            AI.makeMove();
+        }
     };
+
     const checkMove = (location) => {
         if(_humanStatus.includes(+location) || _computerStatus.includes(+location)) {
             return false;
         } else {return true;}
     };
-    
-    let winStatus = false;
 
+    let winStatus = false;
     const _checkWin = () => {
         _winningPatterns.forEach(pattern => {
             let humanCheck = 0;
@@ -123,18 +138,25 @@ const gameLogic = (function() {
 
     const alertWin = (winner) => {
         gameboard.status = "pause";
+
         if(winner === "human") {
             human.score++;
         } else {
             computer.score++
         }
-        if(winner !== "nobody") {gameboard.infoField.innerText = `the ${winner} won!`;
+
+        if(winner === "human") {
+            gameboard.infoField.innerText = `${human.getName} won!`;
+        } else if(winner === "computer") {
+            gameboard.infoField.innerText = `${computer.getName} won!`;
         } else {
             gameboard.infoField.innerText = `that's a tie!`;
         }
+
         gameboard.infoField.parentElement.classList.toggle(`${winner}`);
         gameboard.infoField.parentElement.classList.toggle('hover');
         gameboard.infoField.parentElement.classList.toggle('float-visible');
+        
         setTimeout(function() {
             gameboard.updateScore(winner);
         }, 500);
@@ -159,16 +181,52 @@ const gameLogic = (function() {
         }
     }
 
-    return {checkMove, applyMove, reset};
+    return {checkMove, applyMove, reset, _computerStatus};
 })();
+
+
+
+
+const AI = (function() {
+    let status = (function() {
+        let answer;
+        while(!(answer === "human" || answer === "computer")) {
+            answer = window.prompt("Wanna play against human or computer?", "human");
+            if(answer && answer.toLowerCase() === "human") {
+                return false;
+            } else if(answer && answer.toLowerCase() === "computer") {
+                return true;
+            }
+        }
+    })();
+
+    const makeMove = function() {
+        let choice;
+        choice = Math.floor(Math.random() * Math.floor(8));
+        if(gameLogic.checkMove(choice)) {
+            gameLogic.applyMove("computer", choice);
+        } else if(gameLogic._computerStatus.length < 4){
+            makeMove();
+        } else {
+            return;
+        }
+    }
+
+
+    return {status, prompt, makeMove};
+})();
+
+
+
 
 // Event listeners on the gameboard fields
 (function() {
     gameboard.fields.forEach(field => field.addEventListener("click", _fireEvent));
     gameboard.infoField.addEventListener("click", startGame);
 
+
     function _fireEvent(e) {
-        if(gameboard.status === "running") {
+        if(gameboard.status === "running" && AI.status === false) {
             const currentMove = e.target.dataset.gridIndex;
             if(human.checkMoveStatus() && gameLogic.checkMove(currentMove)) {
                 gameLogic.applyMove("human", currentMove);
@@ -178,7 +236,16 @@ const gameLogic = (function() {
                 alert("This field has already been played.");
             }
         }
+        else if(gameboard.status === "running" && human.checkMoveStatus()) {
+            const currentMove = e.target.dataset.gridIndex;
+            if(human.checkMoveStatus() && gameLogic.checkMove(currentMove)) {
+                gameLogic.applyMove("human", currentMove);
+            } else {
+                alert("This field has already been played.");
+            }
+        }
     }
+
 
     function startGame(e) {
         if(gameboard.status === "pause" && gameboard.infoField.innerText === "click to start new round") {
@@ -190,8 +257,13 @@ const gameLogic = (function() {
     }
 })();
 
-const computer = Player("computer", false);
-const human = Player("human", true);
+
+
+
+AI.status;
+
+const computer = Player((AI.status ? "computer" : "player 2"), false);
+const human = Player((AI.status ? "you" : "player 1"), true);
 
 gameboard.resetGameboard();
 gameboard.updateScore();
