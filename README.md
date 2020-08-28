@@ -1,1 +1,1 @@
-# tic-tac-toe
+Another project from the "Odin" curriculum. I learned using modules, factory functions, and keeping all variables non-global. I also had the chance to think about how and when to use private or public arguments in objects, which cemented the understanding of how they work. 
