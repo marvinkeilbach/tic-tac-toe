@@ -6,7 +6,9 @@ const gameboard = (function() {
     let _gameboard = [[], [], [], 
                       [], [], [], 
                       [], [], []];
-    const infoField = document.querySelector('button');
+    const infoField = document.querySelector('.start-game');
+    const choiceFields = document.querySelectorAll('.choice');
+    const resetField = document.querySelector('.reset');
     const fields = document.querySelectorAll('.field');
     const _humanScore = document.querySelector('.human-score');
     const _computerScore = document.querySelector('.computer-score');
@@ -49,7 +51,7 @@ const gameboard = (function() {
         _computerScore.classList.toggle('active');
     }
 
-    return {applyMove, fields, infoField, status, resetGameboard, updateScore, toggleActive};
+    return {applyMove, fields, infoField, choiceFields, status, resetGameboard, updateScore, toggleActive, resetField};
 })();
 
 
@@ -156,6 +158,8 @@ const gameLogic = (function() {
         gameboard.infoField.parentElement.classList.toggle(`${winner}`);
         gameboard.infoField.parentElement.classList.toggle('hover');
         gameboard.infoField.parentElement.classList.toggle('float-visible');
+
+        
         
         setTimeout(function() {
             gameboard.updateScore(winner);
@@ -164,10 +168,10 @@ const gameLogic = (function() {
             gameboard.infoField.innerText = "click to start new round";
             gameboard.infoField.parentElement.classList.toggle(`${winner}`);
             gameboard.infoField.parentElement.classList.toggle('hover');
+            gameboard.resetField.parentElement.classList.toggle('float-visible');
             gameboard.updateScore(winner);
         }, 2000);
 
-        // reset the game
     }
 
     const reset = () => {
@@ -188,17 +192,7 @@ const gameLogic = (function() {
 
 
 const AI = (function() {
-    let status = (function() {
-        let answer;
-        while(!(answer === "human" || answer === "computer")) {
-            answer = window.prompt("Wanna play against human or computer?", "human");
-            if(answer && answer.toLowerCase() === "human") {
-                return false;
-            } else if(answer && answer.toLowerCase() === "computer") {
-                return true;
-            }
-        }
-    })();
+    let status = false;
 
     const makeMove = function() {
         let choice;
@@ -213,7 +207,7 @@ const AI = (function() {
     }
 
 
-    return {status, prompt, makeMove};
+    return {status, makeMove};
 })();
 
 
@@ -222,7 +216,9 @@ const AI = (function() {
 // Event listeners on the gameboard fields
 (function() {
     gameboard.fields.forEach(field => field.addEventListener("click", _fireEvent));
-    gameboard.infoField.addEventListener("click", startGame);
+    gameboard.infoField.addEventListener("click", _startGame);
+    gameboard.choiceFields.forEach(field => field.addEventListener("click", _makeChoice));
+    gameboard.resetField.addEventListener("click", _reset);
 
 
     function _fireEvent(e) {
@@ -247,20 +243,59 @@ const AI = (function() {
     }
 
 
-    function startGame(e) {
+    function _startGame(e) {
         if(gameboard.status === "pause" && gameboard.infoField.innerText === "click to start new round") {
             e.target.parentElement.classList.toggle('float-visible');
+            if(gameboard.resetField.classList.contains('float-visible')) {
+                gameboard.resetField.classList.toggle('float-visible');
+            }
             gameboard.status = "running"
             gameLogic.reset();
             gameboard.resetGameboard();
         }
+        if(gameboard.resetField.parentElement.classList.contains('float-visible')) {
+            gameboard.resetField.parentElement.classList.toggle('float-visible');
+        }
+    }
+
+
+    function _makeChoice(e) {
+        if(e.target.classList.contains('pvp')) {
+            AI.status = false;
+        } else {
+            AI.status = true;
+        }
+        computer.setName(AI.status ? "computer" : "player 2");
+        human.setName(AI.status ? "you" : "player 1");
+
+        gameboard.choiceFields.forEach(field => {
+            field.parentElement.classList.toggle('float-visible');
+            field.parentElement.classList.toggle('invisible');
+        });
+        gameboard.infoField.parentElement.classList.toggle('float-visible');
+        if(gameboard.infoField.parentElement.classList.contains('invisible')) {
+            gameboard.infoField.parentElement.classList.toggle('invisible');
+        }
+    }
+
+
+    function _reset() {
+        if(gameboard.status === "pause") {
+            gameboard.resetField.parentElement.classList.toggle('float-visible');
+            gameboard.infoField.parentElement.classList.toggle('float-visible');
+            gameboard.infoField.parentElement.classList.toggle('invisible');
+            gameboard.choiceFields.forEach(field => {
+                field.parentElement.classList.toggle('float-visible');
+                field.parentElement.classList.toggle('invisible');
+            })
+            gameLogic.reset();
+            gameboard.resetGameboard();
+            computer.score = 0;
+            human.score = 0;
+            gameboard.updateScore();
+        }
     }
 })();
-
-
-
-
-AI.status;
 
 const computer = Player((AI.status ? "computer" : "player 2"), false);
 const human = Player((AI.status ? "you" : "player 1"), true);

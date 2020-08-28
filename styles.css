@@ -79,7 +79,46 @@ h1 {
     opacity: 0;
 }
 
-.float-message>button {
+.float-message-choice {
+    transition: all 0.3s;
+    transition: top 0s, left 0s, right 0s, bottom 0s, height 0s, width 0s;
+    border: 1px solid rgba(78, 20, 20, 0.192);
+    position: relative;
+    width: 110px;
+    height: 20px;
+    bottom: 302px;
+    left: 78px;
+    border-radius: 40px;
+    background: rgb(30, 129, 129);
+    text-align: center;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    opacity: 0;
+    z-index: 1;
+}
+
+.float-message-reset {
+    transition: all 0.3s;
+    transition: top 0s, left 0s, right 0s, bottom 0s, height 0s, width 0s;
+    border: 1px solid rgba(78, 20, 20, 0.192);
+    position: relative;
+    width: 40px;
+    height: 17px;
+    bottom: 168px;
+    left: -88px;
+    border-radius: 40px;
+    background: rgb(30, 129, 129);
+    text-align: center;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    opacity: 0;
+}
+
+.float-message>button,
+.float-message-choice>button,
+.float-message-reset>button {
     color: white;
     font-size: 0.7rem;
     background: none;
@@ -87,9 +126,12 @@ h1 {
     transition: font-size 0.02s;
 }
 
-.float-message>button:focus {
+.float-message>button:focus,
+.float-message-choice>button:focus,
+.float-message-reset>button:focus {
     outline: none;
 }
+
 .hover>button:hover {
     font-size: 0.72rem;
 }
@@ -160,6 +202,10 @@ div.update-score {
     border: 2px solid rgb(27, 128, 14);
 }
 
+.invisible {
+    z-index: -1;
+}
+
 @media screen and (min-width: 645px) {
     h1 {
         letter-spacing: 1.1rem;
@@ -182,7 +228,22 @@ div.update-score {
         bottom: 357px;
         left: 159px;
     }
-    .float-message>button {
+    .float-message-choice {
+        width: 155px;
+        height: 30px;
+        bottom: 391px;
+        left: 92px;
+        ;
+    }
+    .float-message-reset {
+        width: 60px;
+        height: 20px;
+        bottom: 216px;
+        left: -116px;
+    }
+    .float-message>button,
+    .float-message-choice>button,
+    .float-message-reset>button {
         font-size: 1rem;
     }
     .hover>button:hover {
@@ -233,6 +294,30 @@ div.update-score {
         font-size: 1.31rem;
         font-weight: 600;
     }
+
+    .float-message-choice {
+        width: 210px;
+        height: 33px;
+        bottom: 491px;
+        left: 109px;
+        ;
+    }
+    
+    .float-message-choice>button {
+        font-size: 1.3rem;
+    }
+
+    .float-message-reset {
+        width: 70px;
+        height: 25px;
+        bottom: 268px;
+        left: -142px;
+    }
+
+    .float-message-reset>button {
+        font-size: 1.2rem;
+    }
+
     .score {
         bottom: 232px;
         right: 17px;
