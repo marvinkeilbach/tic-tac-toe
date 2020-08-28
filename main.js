@@ -61,7 +61,7 @@ const Player = (name, moveStatus) => {
     let _name = name;
     let _moveStatus = moveStatus;
     
-    const getName = _name;
+    const getName = () => _name;
     const setName = (newName) => {_name = newName};
     const toggleMoveStatus = () => {_moveStatus = !_moveStatus;};
     const checkMoveStatus = () => _moveStatus;
@@ -148,9 +148,9 @@ const gameLogic = (function() {
         }
 
         if(winner === "human") {
-            gameboard.infoField.innerText = `${human.getName} won!`;
+            gameboard.infoField.innerText = `${human.getName()} won!`;
         } else if(winner === "computer") {
-            gameboard.infoField.innerText = `${computer.getName} won!`;
+            gameboard.infoField.innerText = `${computer.getName()} won!`;
         } else {
             gameboard.infoField.innerText = `that's a tie!`;
         }
